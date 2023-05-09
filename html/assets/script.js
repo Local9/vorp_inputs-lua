@@ -103,7 +103,7 @@ $(function () {
 
       if (myField.style == "block") {
         buttonEle.innerHTML = myField.buttonText;
-        inputEle.placeholder = myField.placeholder;
+        myField.element.placeholder = myField.placeholder;
 
         ToggleInputToDisplay(myField.inputType, inputContainer, textareaContainer);
 
