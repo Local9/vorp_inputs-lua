@@ -3,7 +3,7 @@ class Field {
     this.inputType = fieldData.inputType ?? "input"; // input type (default: input)
     this.buttonText = fieldData.button ?? "confirm"; // button text (default: confirm)
     this.placeholder = fieldData.placeholder ?? "Enter a value"; // placeholder text (default: Enter a value)
-    this.attributes = fieldData.attributes ?? { // input attributes (default: empty)
+    this.attributes = fieldData.attributes ?? { // input attributes (default: as below)
       "inputHeader": "",
       "required": false,
       "value": "",
@@ -15,7 +15,7 @@ class Field {
       "autofocus": true,
       "disabled": false,
     };
-    this.errors = fieldData.errors ?? { // input errors (default: empty)
+    this.errors = fieldData.errors ?? { // input errors (default: as below)
       "valueMissing": "Please enter a value",
       "tooShort": "Value is too short",
       "tooLong": "Value is too long",
