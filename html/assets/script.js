@@ -33,6 +33,8 @@ class Field {
   attributes = {};
   errors = {};
 
+  element = null;
+
   setAttributes(fieldElement, headerElement) {
     for (const key in this.attributes) {
       if (key === "inputHeader") {
@@ -47,7 +49,7 @@ class Field {
   }
 }
 
-let fieldData = {};
+let myField = new Field({});
 
 function InvalidMessageHandler(field) {
   if (field.validity.valueMissing) {
@@ -80,11 +82,11 @@ function ToggleInputToDisplay(type, inputElement, textareaElement) {
 $(function () {
   window.addEventListener("message", function (event) {
     if (event.data.type == "enableinput") {
-      const field = new Field(event.data);
+      myField = new Field(event.data);
 
-      document.body.style.display = field.style;
+      document.body.style.display = myField.style;
 
-      const inputEle = field.inputType === "textarea" ? document.getElementById("inpTextarea") : document.getElementById("inputUser");
+      myField.element = myField.inputType === "textarea" ? document.getElementById("inpTextarea") : document.getElementById("inputUser");
       const inputHeaderEle = document.getElementById("inputHeader");
       const buttonEle = document.getElementById("submitButton");
       const inputContainer = document.getElementById("vorpSingleInput");
@@ -92,13 +94,13 @@ $(function () {
 
       inputHeaderEle.style.display = "none";
 
-      if (field.style == "block") {
-        buttonEle.innerHTML = field.buttonText;
-        inputEle.placeholder = field.placeholder;
+      if (myField.style == "block") {
+        buttonEle.innerHTML = myField.buttonText;
+        inputEle.placeholder = myField.placeholder;
 
-        ToggleInputToDisplay(field.inputType, inputContainer, textareaContainer);
+        ToggleInputToDisplay(myField.inputType, inputContainer, textareaContainer);
 
-        field.setAttributes(inputEle, inputHeaderEle);
+        myField.setAttributes(myField.element, inputHeaderEle);
       }
     } else {
       console.error("Unknown type: " + event.data.type);
@@ -127,19 +129,16 @@ $(function () {
   });
 
   $("#formInputs").submit(function (event) {
-    //event.preventDefault(); // Prevent form from submitting
+    event.preventDefault();
+    const element = myField.element;
+    let fieldValue = element.value;
 
-    let fieldValue = $("#inputUser").val();
-
-    if ($("#vorpTextarea").is(":visible")) {
-      fieldValue = $("#inpTextarea").val();
+    if (!element.checkValidity()) {
+      InvalidMessageHandler(element);
+      element.reportValidity();
+      return;
     }
 
-    $.post(
-      "http://vorp_inputs/submit",
-      JSON.stringify({
-        stringtext: fieldValue,
-      })
-    );
+    fetch("http://vorp_inputs/submit", { method: "POST", body: JSON.stringify({ stringtext: fieldValue }) });
   });
 });
