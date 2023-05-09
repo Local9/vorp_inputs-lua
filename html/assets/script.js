@@ -72,6 +72,8 @@ function ToggleInputToDisplay(type, inputElement, textareaElement) {
   } else if (type == "input") {
     inputElement.style.display = "unset";
     textareaElement.style.display = "none";
+  } else {
+    console.error("Unknown input type: " + type);
   }
 }
 
