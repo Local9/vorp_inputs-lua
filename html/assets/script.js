@@ -35,15 +35,15 @@ class Field {
 
   element = null;
 
-  setAttributes(fieldElement, headerElement) {
+  setAttributes(headerElement) {
     for (const key in this.attributes) {
       if (key === "inputHeader") {
         headerElement.innerHTML = this.attributes[key];
         headerElement.style.display = "block";
       } else if (key === "required") {
-        fieldElement.required = this.attributes[key];
+        this.element.required = this.attributes[key];
       } else {
-        fieldElement.setAttribute(`${key}`, `${this.attributes[key]}`);
+        this.element.setAttribute(`${key}`, `${this.attributes[key]}`);
       }
     }
   }
@@ -109,7 +109,7 @@ $(function () {
 
         ToggleInputToDisplay(myField.inputType, inputContainer, textareaContainer);
 
-        myField.setAttributes(myField.element, inputHeaderEle);
+        myField.setAttributes(inputHeaderEle);
       }
     } else {
       console.error("Unknown type: " + event.data.type);
