@@ -33,11 +33,16 @@ class Field {
   attributes = {};
   errors = {};
 
-  // set field attributes
-  setAttributes(field) { 
-    // for each attribute in attributes set the field attribute
+  setAttributes(fieldElement, headerElement) {
     for (const key in this.attributes) {
-      field.setAttribute(`${key}`, `${this.attributes[key]}`);
+      if (key === "inputHeader") {
+        headerElement.innerHTML = this.attributes[key];
+        headerElement.style.display = "block";
+      } else if (key === "required") {
+        fieldElement.required = this.attributes[key];
+      } else {
+        fieldElement.setAttribute(`${key}`, `${this.attributes[key]}`);
+      }
     }
   }
 }
@@ -60,6 +65,16 @@ function InvalidMessageHandler(field) {
   }
 }
 
+function ToggleInputToDisplay(type, inputElement, textareaElement) {
+  if (type == "textarea") {
+    inputElement.style.display = "none";
+    textareaElement.style.display = "unset";
+  } else if (type == "input") {
+    inputElement.style.display = "unset";
+    textareaElement.style.display = "none";
+  }
+}
+
 $(function () {
   window.addEventListener("message", function (event) {
     if (event.data.type == "enableinput") {
@@ -67,7 +82,7 @@ $(function () {
 
       document.body.style.display = field.style;
 
-      const inputEle = document.getElementById("inputUser");
+      const inputEle = field.inputType === "textarea" ? document.getElementById("inpTextarea") : document.getElementById("inputUser");
       const inputHeaderEle = document.getElementById("inputHeader");
       const buttonEle = document.getElementById("submitButton");
       const inputContainer = document.getElementById("vorpSingleInput");
@@ -78,27 +93,10 @@ $(function () {
       if (field.style == "block") {
         buttonEle.innerHTML = field.buttonText;
         inputEle.placeholder = field.placeholder;
-        inputEle.value = field?.attributes?.value ?? "";
 
-        if (field.inputType == "textarea") {
-          textareaContainer.style.display = "unset";
-          inputContainer.style.display = "none";
-          inputEle = document.getElementById("inpTextarea");
-        } else if (field.inputType == "input") {
-          textareaContainer.style.display = "none";
-          inputContainer.style.display = "inline";
-        }
+        ToggleInputToDisplay(field.inputType, inputContainer, textareaContainer);
 
-        for (const key in field?.attributes) {
-          if (key === "inputHeader") {
-            inputHeaderEle.innerHTML = field.attributes[key];
-            inputHeaderEle.style.display = "block";
-          } else if (key === "required") {
-            inputEle.required = field.attributes[key];
-          } else {
-            inputEle.setAttribute(`${key}`, `${field.attributes[key]}`);
-          }
-        }
+        field.setAttributes(inputEle, inputHeaderEle);
       }
     } else {
       console.error("Unknown type: " + event.data.type);
