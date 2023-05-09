@@ -28,9 +28,9 @@ InputsService.SetSubmit = function(result, callback)
 end
 
 ---@param result table
-InputsService.SetClose = function(result)
+InputsService.SetClose = function(result, callback)
     --TODO At which point will this method be called? Is it correct to set result.resultText and call callback?
-    InputsService.CallCallbackAndCloseInput(result)
+    InputsService.CallCallbackAndCloseInput(result, callback)
 end
 
 ---@param title string
