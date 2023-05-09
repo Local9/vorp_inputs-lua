@@ -1,46 +1,103 @@
+class Field {
+  constructor(fieldData) {
+    this.inputType = fieldData.inputType ?? "input"; // input type (default: input)
+    this.buttonText = fieldData.button ?? "confirm"; // button text (default: confirm)
+    this.placeholder = fieldData.placeholder ?? "Enter a value"; // placeholder text (default: Enter a value)
+    this.attributes = fieldData.attributes ?? { // input attributes (default: empty)
+      "inputHeader": "",
+      "required": false,
+      "value": "",
+      "minlength": 0,
+      "maxlength": 255,
+      "pattern": "",
+      "title": "",
+      "autocomplete": "off",
+      "autofocus": true,
+      "disabled": false,
+    };
+    this.errors = fieldData.errors ?? { // input errors (default: empty)
+      "valueMissing": "Please enter a value",
+      "tooShort": "Value is too short",
+      "tooLong": "Value is too long",
+      "patternMismatch": "Value is invalid",
+      "typeMismatch": "Value is invalid type",
+    };
+  }
+
+  type = "enableinput";
+  style = "block";
+
+  inputType = "";
+  buttonText = "";
+  placeholder = "";
+  attributes = {};
+  errors = {};
+}
+
+let fieldData = {};
+
+function InvalidMessageHandler(field) {
+  if (field.validity.valueMissing) {
+    field.setCustomValidity(errors?.valueMissing);
+  } else if (field.validity.tooShort) {
+    field.setCustomValidity(errors?.tooShort);
+  } else if (field.validity.tooLong) {
+    field.setCustomValidity(errors?.tooLong);
+  } else if (field.validity.patternMismatch) {
+    field.setCustomValidity(errors?.patternMismatch);
+  } else if (field.validity.typeMismatch) {
+    field.setCustomValidity(errors?.typeMismatch);
+  } else {
+    field.setCustomValidity(""); // clear error message
+  }
+}
+
 $(function () {
   window.addEventListener("message", function (event) {
     if (event.data.type == "enableinput") {
-      const data = event.data;
-      document.body.style.display = data.style;
+      const field = new Field(event.data);
 
-      let inputEle = document.getElementById("inputUser");
+      document.body.style.display = field.style;
+
+      const inputEle = document.getElementById("inputUser");
       const inputHeaderEle = document.getElementById("inputHeader");
       const buttonEle = document.getElementById("submitButton");
-      var inputContainer = document.getElementById("vorpSingleInput");
-      var textareaContainer = document.getElementById("vorpTextarea");
+      const inputContainer = document.getElementById("vorpSingleInput");
+      const textareaContainer = document.getElementById("vorpTextarea");
 
       inputHeaderEle.style.display = "none";
 
-      if (data.style == "block") {
-        buttonEle.innerHTML = data.button;
-        inputEle.placeholder = data.placeholder;
-        inputEle.value = data?.attributes?.value ?? "";
+      if (field.style == "block") {
+        buttonEle.innerHTML = field.buttonText;
+        inputEle.placeholder = field.placeholder;
+        inputEle.value = field?.attributes?.value ?? "";
 
-        if (data.inputType == "textarea") {
+        if (field.inputType == "textarea") {
           textareaContainer.style.display = "unset";
           inputContainer.style.display = "none";
           inputEle = document.getElementById("inpTextarea");
-        } else if (data.inputType == "input") {
+        } else if (field.inputType == "input") {
           textareaContainer.style.display = "none";
           inputContainer.style.display = "inline";
         }
 
-        for (const key in data?.attributes) {
+        for (const key in field?.attributes) {
           if (key === "inputHeader") {
-            inputHeaderEle.innerHTML = data.attributes[key];
+            inputHeaderEle.innerHTML = field.attributes[key];
             inputHeaderEle.style.display = "block";
           } else {
-            inputEle.setAttribute(`${key}`, `${data.attributes[key]}`);
+            inputEle.setAttribute(`${key}`, `${field.attributes[key]}`);
           }
         }
       }
 
-      if (data.inputType == "textarea") {
+      if (field.inputType == "textarea") {
         $("#inpTextarea").focus();
       } else {
         $("#inputUser").focus();
       }
+    } else {
+      console.error("Unknown type: " + event.data.type);
     }
   });
 

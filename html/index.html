@@ -21,11 +21,11 @@
                         <span id="inputHeader" class="hidden pb-2 font-rdr-lino"></span>
                         <div class="form-group hidden" id="vorpSingleInput">
                             <input class="w-full px-4 py-2 font-bold text-black bg-gray-300 rounded" type="text"
-                                name="value" id="inputUser" placeholder="">
+                                name="value" id="inputUser" placeholder="" oninvalid="InvalidMessageHandler(this)">
                         </div>
                         <div class="form-group hidden" id="vorpTextarea">
                             <textarea class="w-full px-4 py-2 font-bold text-black bg-gray-300 rounded" name="value"
-                                id="inpTextarea"></textarea>
+                                id="inpTextarea" oninvalid="InvalidMessageHandler(this)"></textarea>
                         </div>
                     </div>
                     <div class="flex items-center justify-center w-full mt-auto">
