@@ -80,7 +80,9 @@ function ToggleInputToDisplay(type, inputElement, textareaElement) {
 }
 
 function CloseInput() {
-  document.body.style.display = "none";
+  myField = new Field({}); // reset field data
+  document.body.style.display = "none"; // hide input
+  // send close event to NUI
   fetch("http://vorp_inputs/close", { method: "POST", body: JSON.stringify({ stringtext: "close" }) })
     .then((response) => { })
     .catch((error) => { console.error("NUI Close Error:", error); });
