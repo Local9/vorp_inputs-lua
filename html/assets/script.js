@@ -53,15 +53,15 @@ let myField = new Field({});
 
 function InvalidMessageHandler(field) {
   if (field.validity.valueMissing) {
-    field.setCustomValidity(errors?.valueMissing);
+    field.setCustomValidity(myField.errors?.valueMissing);
   } else if (field.validity.tooShort) {
-    field.setCustomValidity(errors?.tooShort);
+    field.setCustomValidity(myField.errors?.tooShort);
   } else if (field.validity.tooLong) {
-    field.setCustomValidity(errors?.tooLong);
+    field.setCustomValidity(myField.errors?.tooLong);
   } else if (field.validity.patternMismatch) {
-    field.setCustomValidity(errors?.patternMismatch);
+    field.setCustomValidity(myField.errors?.patternMismatch);
   } else if (field.validity.typeMismatch) {
-    field.setCustomValidity(errors?.typeMismatch);
+    field.setCustomValidity(myField.errors?.typeMismatch);
   } else {
     field.setCustomValidity(""); // clear error message
   }
@@ -69,9 +69,11 @@ function InvalidMessageHandler(field) {
 
 function ToggleInputToDisplay(type, inputElement, textareaElement) {
   if (type == "textarea") {
+    textareaElement.focus();
     inputElement.style.display = "none";
     textareaElement.style.display = "unset";
   } else if (type == "input") {
+    inputElement.focus();
     inputElement.style.display = "unset";
     textareaElement.style.display = "none";
   } else {

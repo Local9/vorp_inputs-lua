@@ -4,7 +4,9 @@ local callbackOfCurrentOpenInput = nil
 InputsService.CloseInput = function(callback)
     callbackOfCurrentOpenInput = nil
     SetNuiFocus(false, false)
-    callback({ success = true }) -- All RegisterNUICallback MUST have a callback, even if it's empty which allows the client to continue
+    if callback ~= nil then
+        callback({ success = true }) -- All RegisterNUICallback MUST have a callback, even if it's empty which allows the client to continue
+    end
 end
 
 ---@param result table
