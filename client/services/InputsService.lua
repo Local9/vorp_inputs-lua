@@ -1,15 +1,14 @@
 InputsService = {}
 local callbackOfCurrentOpenInput = nil
 
-InputsService.CloseInput = function()
+InputsService.CloseInput = function(callback)
     callbackOfCurrentOpenInput = nil
     SetNuiFocus(false, false)
-    SendNUIMessage(NUIEvent:New({ style = "none" }))
+    callback({ success = true }) -- All RegisterNUICallback MUST have a callback, even if it's empty which allows the client to continue
 end
 
 ---@param result table
-InputsService.CallCallbackAndCloseInput = function(result)
-
+InputsService.CallCallbackAndCloseInput = function(result, callback)
     local resultText = result.stringtext or nil
 
     if resultText ~= nil then
@@ -18,47 +17,47 @@ InputsService.CallCallbackAndCloseInput = function(result)
 
     Wait(1)
 
-    InputsService.CloseInput()
+    InputsService.CloseInput(callback)
 end
 
 ---@param result table
-InputsService.SetSubmit = function(result)
-    InputsService.CallCallbackAndCloseInput(result)
+InputsService.SetSubmit = function(result, callback)
+    InputsService.CallCallbackAndCloseInput(result, callback)
 end
 
 ---@param result table
 InputsService.SetClose = function(result)
-   --TODO At which point will this method be called? Is it correct to set result.resultText and call callback?
+    --TODO At which point will this method be called? Is it correct to set result.resultText and call callback?
     InputsService.CallCallbackAndCloseInput(result)
 end
 
 ---@param title string
 ---@param placeHolder string
----@param cb function
-InputsService.GetInputs = function(title, placeHolder, cb)
-    InputsService.WaitForInputs(title, placeHolder, cb)
+---@param callback function
+InputsService.GetInputs = function(title, placeHolder, callback)
+    InputsService.WaitForInputs(title, placeHolder, callback)
 end
 
 ---@param title string
 ---@param placeHolder string
 ---@param inputType string
----@param cb function
-InputsService.GetInputsWithInputType = function(title, placeHolder, inputType, cb)
-    InputsService.WaitForInputs(title, placeHolder, cb, inputType)
+---@param callback function
+InputsService.GetInputsWithInputType = function(title, placeHolder, inputType, callback)
+    InputsService.WaitForInputs(title, placeHolder, callback, inputType)
 end
 
 ---@param inputConfig string
----@param cb function
-InputsService.OnAdvancedInput = function(inputConfig, cb)
+---@param callback function
+InputsService.OnAdvancedInput = function(inputConfig, callback)
     SetNuiFocus(true, true)
     SendNUIMessage(json.decode(inputConfig))
-    callbackOfCurrentOpenInput = cb
+    callbackOfCurrentOpenInput = callback
 end
 
 ---@param button string
 ---@param placeHolder string
 ---@param cb function
----@param inputType string
+---@param inputType string? "input" or "textarea" (default: "input")
 InputsService.WaitForInputs = function(button, placeHolder, cb, inputType)
     inputType = inputType or "input" or "textarea"
 

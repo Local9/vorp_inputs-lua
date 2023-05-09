@@ -79,6 +79,13 @@ function ToggleInputToDisplay(type, inputElement, textareaElement) {
   }
 }
 
+function CloseInput() {
+  document.body.style.display = "none";
+  fetch("http://vorp_inputs/close", { method: "POST", body: JSON.stringify({ stringtext: "close" }) })
+    .then((response) => { })
+    .catch((error) => { console.error("NUI Close Error:", error); });
+}
+
 $(function () {
   window.addEventListener("message", function (event) {
     if (event.data.type == "enableinput") {
@@ -109,23 +116,12 @@ $(function () {
 
   document.onkeyup = function (data) {
     if (data.key == "Escape") {
-      // Escape key
-      $.post(
-        "http://vorp_inputs/close",
-        JSON.stringify({
-          stringtext: "close",
-        })
-      );
+      CloseInput();
     }
   };
 
   $("#closeButton").click(function () {
-    $.post(
-      "http://vorp_inputs/close",
-      JSON.stringify({
-        stringtext: "close",
-      })
-    );
+    CloseInput();
   });
 
   $("#formInputs").submit(function (event) {
@@ -139,6 +135,8 @@ $(function () {
       return;
     }
 
-    fetch("http://vorp_inputs/submit", { method: "POST", body: JSON.stringify({ stringtext: fieldValue }) });
+    fetch("http://vorp_inputs/submit", { method: "POST", body: JSON.stringify({ stringtext: fieldValue }) })
+      .then((response) => { CloseInput(); })
+      .catch((error) => { console.error("NUI Submit Error:", error); })
   });
 });
