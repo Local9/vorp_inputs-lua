@@ -85,6 +85,8 @@ $(function () {
           if (key === "inputHeader") {
             inputHeaderEle.innerHTML = field.attributes[key];
             inputHeaderEle.style.display = "block";
+          } else if (key === "required") {
+            inputEle.required = field.attributes[key];
           } else {
             inputEle.setAttribute(`${key}`, `${field.attributes[key]}`);
           }
