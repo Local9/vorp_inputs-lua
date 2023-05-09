@@ -5,7 +5,7 @@ class Field {
     this.placeholder = fieldData.placeholder ?? "Enter a value"; // placeholder text (default: Enter a value)
     this.attributes = fieldData.attributes ?? { // input attributes (default: as below)
       "inputHeader": "",
-      "required": false,
+      "required": true,
       "value": "",
       "minlength": 0,
       "maxlength": 255,
@@ -40,8 +40,8 @@ class Field {
       if (key === "inputHeader") {
         headerElement.innerHTML = this.attributes[key];
         headerElement.style.display = "block";
-      } else if (key === "required") {
-        this.element.required = this.attributes[key];
+      } else if (key === "required" && this.attributes[key] === true) {
+        this.element.required = "required";
       } else {
         this.element.setAttribute(`${key}`, `${this.attributes[key]}`);
       }
@@ -85,7 +85,7 @@ function CloseInput() {
   myField = new Field({}); // reset field data
   document.body.style.display = "none"; // hide input
   // send close event to NUI
-  fetch("http://vorp_inputs/close", { method: "POST", body: JSON.stringify({ stringtext: "close" }) })
+  fetch("https://vorp_inputs/close", { method: "POST", body: JSON.stringify({ stringtext: "close" }) })
     .then((response) => { })
     .catch((error) => { console.error("NUI Close Error:", error); });
 }
@@ -139,7 +139,7 @@ $(function () {
       return;
     }
 
-    fetch("http://vorp_inputs/submit", { method: "POST", body: JSON.stringify({ stringtext: fieldValue }) })
+    fetch("https://vorp_inputs/submit", { method: "POST", body: JSON.stringify({ stringtext: fieldValue }) })
       .then((response) => { CloseInput(); })
       .catch((error) => { console.error("NUI Submit Error:", error); })
   });
