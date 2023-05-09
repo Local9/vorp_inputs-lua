@@ -92,12 +92,6 @@ $(function () {
           }
         }
       }
-
-      if (field.inputType == "textarea") {
-        $("#inpTextarea").focus();
-      } else {
-        $("#inputUser").focus();
-      }
     } else {
       console.error("Unknown type: " + event.data.type);
     }
