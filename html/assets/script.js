@@ -32,6 +32,14 @@ class Field {
   placeholder = "";
   attributes = {};
   errors = {};
+
+  // set field attributes
+  setAttributes(field) { 
+    // for each attribute in attributes set the field attribute
+    for (const key in this.attributes) {
+      field.setAttribute(`${key}`, `${this.attributes[key]}`);
+    }
+  }
 }
 
 let fieldData = {};
@@ -98,7 +106,7 @@ $(function () {
   });
 
   document.onkeyup = function (data) {
-    if (data.which == 27) {
+    if (data.key == "Escape") {
       // Escape key
       $.post(
         "http://vorp_inputs/close",
