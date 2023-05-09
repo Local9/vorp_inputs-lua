@@ -43,7 +43,6 @@ class Field {
       } else if (key === "required") {
         fieldElement.required = this.attributes[key];
       } else {
-        // set all other attributes
         fieldElement.setAttribute(`${key}`, `${this.attributes[key]}`);
       }
     }
